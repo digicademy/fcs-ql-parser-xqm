@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar 
+    xmlns="http://relaxng.org/ns/structure/1.0"
+    xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+    <start>
+        <ref name="query"/>
+    </start>
+    
+    <!-- QUERY -->
+    <define name="query">
+        <element name="query">
+            <a:documentation>An FCS-QL query</a:documentation>
+            <oneOrMore>
+                <choice>
+                    <ref name="segment"/>
+                    <ref name="segmentGroup"/>
+                </choice>
+            </oneOrMore>
+            <optional>
+                <ref name="scope"/>
+            </optional>
+        </element>
+    </define>
+    
+    <!-- SEGMENT GROUP -->
+    <define name="segmentGroup">
+        <element name="group">
+            <a:documentation>A group of FCS-QL main queries</a:documentation>
+            <optional>
+                <element name="operator">
+                    <value>or</value>
+                </element>
+            </optional>
+            <oneOrMore>
+                <choice>
+                    <ref name="segment"/>
+                    <ref name="segmentGroup"/>
+                </choice>
+            </oneOrMore>
+        </element>
+    </define>
+    
+    <!-- SEGMENT -->
+    <define name="segment">
+        <element name="segment">
+            <a:documentation>An FCS-QL segment query</a:documentation>
+            <optional>
+                <attribute name="min">
+                    <choice>
+                        <data type="nonNegativeInteger"/>
+                        <value>unbound</value>
+                    </choice>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="max">
+                    <choice>
+                        <data type="nonNegativeInteger"/>
+                        <value>unbound</value>
+                    </choice>
+                </attribute>
+            </optional>
+            <optional>
+                <choice>
+                    <ref name="expression"/>
+                    <ref name="booleanExpression"/>
+                </choice>
+            </optional>
+        </element>
+    </define>
+    
+    <!-- EXPRESSION -->
+    <define name="expression">
+        <element name="expression">
+            <a:documentation>An FCS-QL expression without boolean operators</a:documentation>
+            <ref name="attribute"/>
+            <ref name="operator"/>
+            <ref name="regexp"/>
+        </element>
+    </define>
+    
+    <!-- ATTRIBUTE -->
+    <define name="attribute">
+        <element name="attribute">
+            <a:documentation>A qualified or unqualified FCS-QL attribute</a:documentation>
+            <choice>
+                <ref name="identifierPattern"/>
+                <ref name="qualifiedIdentifierPattern"/>
+            </choice>
+        </element>
+    </define>
+    
+    <!-- IDENTIFIER PATTERNS -->
+    <define name="identifierPattern">
+        <data type="string">
+            <param name="pattern">[a-zA-Z][a-zA-Z0-9\-]*</param>
+        </data>
+    </define>
+    
+    <define name="qualifiedIdentifierPattern">
+        <data type="string">
+            <param name="pattern">[a-zA-Z][a-zA-Z0-9\-]*:[a-zA-Z][a-zA-Z0-9\-]*</param>
+        </data>
+    </define>
+    
+    <!-- OPERATOR -->
+    <define name="operator">
+        <element name="operator">
+            <a:documentation>An FCS-QL operator</a:documentation>
+            <choice>
+                <value>=</value>
+                <value>!=</value>
+            </choice>
+        </element>
+    </define>
+    
+    <!-- REGEXP -->
+    <define name="regexp">
+        <element name="regexp">
+            <a:documentation>A regular expression with or without flags</a:documentation>
+            <optional>
+                <ref name="regexpFlags"/>
+            </optional>
+            <text/>
+        </element>
+    </define>
+    
+    <!-- REGEXP FLAGS -->
+    <define name="regexpFlags">
+        <attribute name="flags">
+            <a:documentation>One or more FCS-QL regular expression flags</a:documentation>
+            <data type="string">
+                <param name="pattern">[iIcCld]+</param>
+            </data>
+        </attribute>
+    </define>
+    
+    <!-- BOOLEAN EXPRESSION -->
+    <define name="booleanExpression">
+        <element name="boolean">
+            <a:documentation>An FCS-QL expression with boolean operators</a:documentation>
+            <choice>
+                <group>
+                    <element name="operator">
+                        <value>not</value>
+                    </element>
+                    <ref name="booleanOperand"/>
+                </group>
+                <group>
+                    <element name="operator">
+                        <choice>
+                            <value>and</value>
+                            <value>or</value>
+                        </choice>
+                    </element>
+                    <ref name="booleanOperand"/>
+                    <ref name="booleanOperand"/>
+                </group>
+            </choice>
+        </element>
+    </define>
+    
+    <!-- BOOLEAN OPERAND -->
+    <define name="booleanOperand">
+        <choice>
+            <ref name="expression"/>
+            <ref name="booleanExpression"/>
+        </choice>
+    </define>
+    
+    <!-- SCOPE -->
+    <define name="scope">
+        <element name="scope">
+            <a:documentation>The scope of a FCS-QL within-part</a:documentation>
+            <choice>
+                <value>sentence</value>
+                <value>s</value>
+                <value>utterance</value>
+                <value>u</value>
+                <value>paragraph</value>
+                <value>p</value>
+                <value>turn</value>
+                <value>t</value>
+                <value>text</value>
+                <value>session</value>
+            </choice>
+        </element>
+    </define>
+</grammar>
