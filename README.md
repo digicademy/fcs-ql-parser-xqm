@@ -1,5 +1,5 @@
 
-# cql-parser-xqm
+# fcs-ql-parser-xqm
 
 This software package provides an XQuery module developed at the Digital Academy of the Academy of Sciences and Literature | Mainz that may be used to parse [FCS-QL](https://office.clarin.eu/v/CE-2017-1046-FCS-Specification-v89.pdf) and transform FCS-QL queries into a custom XML format that matches the [provided schema](schema/query.rng).
 
@@ -34,7 +34,7 @@ transforms a CLARIN FCS-QL query into a query element
 
 ### Parameters:
 
-**$query?** a query following the syntax of FCS-QL (c.f. https://office.clarin.eu/v/CE-2017-1046-FCS-Specification-v89.pdf) - e.g. `"lorem"` or `[lemma = "ipsum"/l & pos='ADJ']`
+**$query?** a query following the syntax of FCS-QL (c.f. https://office.clarin.eu/v/CE-2017-1046-FCS-Specification-v89.pdf) - e.g. `"lorem"` or `[lemma = "ipsum"/id & pos != 'NOUN']` or `[word='test'] within s`
 
 ### Returns:
 
@@ -53,39 +53,37 @@ transforms a CLARIN FCS-QL query into a query element
 ```
 or
 ```xml
-<searchClause xmlns="http://www.loc.gov/zing/cql/xcql/">
-    <index>c.title</index>
-    <relation>
-        <value>any</value>
-    </relation>
-    <term>fish frog</term>
-</searchClause>
+<query>
+    <segment>
+        <boolean>
+            <operator>and</operator>
+            <expression>
+                <attribute>lemma</attribute>
+                <operator>=</operator>
+                <regexp flags="id">ipsum</regexp>
+            </expression>
+            <expression>
+                <attribute>pos</attribute>
+                <operator>!=</operator>
+                <regexp>NOUN</regexp>
+            </expression>
+        </boolean>
+    </segment>
+</query>
+</query>
 ```
 or
 ```xml
-<triple xmlns="http://www.loc.gov/zing/cql/xcql/">
-    <Boolean>
-        <value>or</value>
-    </Boolean>
-    <leftOperand>
-        <searchClause>
-            <index>cql.serverChoice</index>
-            <relation>
-                <value>=</value>
-            </relation>
-            <term>cat</term>
-        </searchClause>
-    </leftOperand>
-    <rightOperand>
-        <searchClause>
-            <index>cql.serverChoice</index>
-            <relation>
-                <value>=</value>
-            </relation>
-            <term>dog</term>
-        </searchClause>
-    </rightOperand>
-</triple>
+<query>
+    <segment>
+        <expression>
+            <attribute>word</attribute>
+            <operator>=</operator>
+            <regexp>test</regexp>
+        </expression>
+    </segment>
+    <scope>s</scope>
+</query>
 ```
 
 ---
