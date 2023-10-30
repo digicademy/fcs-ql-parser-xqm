@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/639912158.svg)](https://zenodo.org/doi/10.5281/zenodo.8124278)
+[![DOI](https://zenodo.org/badge/711847299.svg)](https://zenodo.org/doi/10.5281/zenodo.10054311)
 
 # fcs-ql-parser-xqm
 
